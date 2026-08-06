@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1324">
+  <meta name="description" content="虚拟化学实验室：在线互动化学实验、反应模拟、实验记录和安全提示。">
+  <title>虚拟化学实验室 | Virtual Chemistry Lab</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta property="og:title" content="虚拟化学实验室">
+  <meta property="og:description" content="拖拽试剂、操作仪器、观察反应并生成实验记录。">
+  <meta property="og:image" content="assets/lab-og.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true">
+          <span class="brand-bubble"></span>
+          <span class="brand-flask"></span>
+        </div>
+        <div>
+          <h1>虚拟化学实验室</h1>
+          <p>Virtual Chemistry Lab · 反应模拟 · 实验记录 · 安全训练</p>
+        </div>
+      </div>
+      <div class="top-actions" aria-label="全局操作">
+        <button class="icon-button" id="installBtn" type="button" title="安装到桌面" aria-label="安装到桌面">
+          <span aria-hidden="true">⇩</span>
+        </button>
+        <button class="icon-button" id="exportBtn" type="button" title="导出实验记录" aria-label="导出实验记录">
+          <span aria-hidden="true">⤓</span>
+        </button>
+        <button class="icon-button danger" id="resetBtn" type="button" title="清空实验台" aria-label="清空实验台">
+          <span aria-hidden="true">↺</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="lab-layout">
+      <aside class="panel reagent-panel" aria-label="试剂与仪器">
+        <section class="panel-section">
+          <div class="section-head">
+            <h2>试剂架</h2>
+            <span id="reagentCount">0</span>
+          </div>
+          <label class="search-wrap" for="searchInput">
+            <span aria-hidden="true">⌕</span>
+            <input id="searchInput" type="search" placeholder="搜索名称、化学式或危险类型">
+          </label>
+          <div class="segmented" id="categoryTabs" role="tablist" aria-label="试剂分类"></div>
+          <div class="reagent-grid" id="reagentGrid"></div>
+        </section>
+
+        <section class="panel-section instruments">
+          <div class="section-head">
+            <h2>仪器架</h2>
+            <span>7</span>
+          </div>
+          <div class="instrument-grid" id="instrumentGrid"></div>
+        </section>
+      </aside>
+
+      <section class="panel stage-panel" aria-label="实验台">
+        <div class="stage-head">
+          <div>
+            <h2>实验台</h2>
+            <p id="stageSubtitle">将试剂拖入烧杯，或点击试剂快速加入。</p>
+          </div>
+          <div class="status-strip">
+            <span class="status-pill" id="tempStatus">室温</span>
+            <span class="status-pill" id="modeStatus">开放实验</span>
+            <span class="status-pill" id="scoreStatus">0 分</span>
+          </div>
+        </div>
+
+        <div class="bench" id="bench">
+          <div class="bench-grid"></div>
+          <div class="safety-sign" id="safetySign">佩戴护目镜</div>
+          <div class="reaction-aura" id="reactionAura"></div>
+          <div class="steam" id="steam"></div>
+          <div class="sparks" id="sparks"></div>
+          <div class="flame" id="flame"></div>
+          <div class="stand" id="stand"></div>
+          <div class="vessel-area" id="vesselDrop" tabindex="0" aria-label="实验容器，可拖放试剂">
+            <div class="vessel">
+              <div class="liquid" id="liquid"></div>
+              <div class="precipitate" id="precipitate"></div>
+              <div class="bubbles" id="bubbles"></div>
+              <div class="vessel-glass"></div>
+              <div class="volume-mark v1"></div>
+              <div class="volume-mark v2"></div>
+              <div class="volume-mark v3"></div>
+            </div>
+            <div class="vessel-shadow"></div>
+          </div>
+          <div class="funnel" id="funnel"></div>
+          <div class="power-leads" id="powerLeads">
+            <span></span><span></span>
+          </div>
+        </div>
+
+        <div class="contents-panel">
+          <div class="contents-head">
+            <h3>当前加入</h3>
+            <button id="clearContentsBtn" type="button">清空容器</button>
+          </div>
+          <div class="chips" id="contentChips"></div>
+        </div>
+
+        <div class="quick-actions" aria-label="实验条件">
+          <button class="action-button" type="button" data-condition="heat">
+            <span aria-hidden="true">♨</span>
+            <span>加热</span>
+          </button>
+          <button class="action-button" type="button" data-condition="stir">
+            <span aria-hidden="true">↻</span>
+            <span>搅拌</span>
+          </button>
+          <button class="action-button" type="button" data-condition="cool">
+            <span aria-hidden="true">❄</span>
+            <span>冷却</span>
+          </button>
+          <button class="action-button" type="button" data-condition="power">
+            <span aria-hidden="true">⎍</span>
+            <span>通电</span>
+          </button>
+        </div>
+      </section>
+
+      <aside class="panel insight-panel" aria-label="实验指导与记录">
+        <section class="panel-section">
+          <div class="section-head">
+            <h2>实验任务</h2>
+            <span id="taskProgress">0/0</span>
+          </div>
+          <div class="experiment-list" id="experimentList"></div>
+        </section>
+
+        <section class="panel-section reaction-card">
+          <div class="section-head">
+            <h2>反应观察</h2>
+            <span id="riskLevel">低风险</span>
+          </div>
+          <div id="reactionOutput" class="reaction-output">
+            <p class="empty-text">等待加入试剂。系统会自动匹配反应、显示现象、方程式和安全建议。</p>
+          </div>
+        </section>
+
+        <section class="panel-section notebook">
+          <div class="section-head">
+            <h2>实验记录</h2>
+            <button id="copyLogBtn" type="button">复制</button>
+          </div>
+          <textarea id="noteInput" placeholder="记录实验目的、步骤、观察和结论。"></textarea>
+          <div class="log-list" id="logList"></div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <template id="reagentTemplate">
+    <button class="reagent-card" type="button" draggable="true">
+      <span class="vial" aria-hidden="true"><span></span></span>
+      <span class="reagent-main">
+        <strong></strong>
+        <small></small>
+      </span>
+      <span class="hazard-dot"></span>
+    </button>
+  </template>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

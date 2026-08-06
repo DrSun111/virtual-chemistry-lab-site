@@ -1,0 +1,30 @@
+{
+  "updated": "2026-08-06",
+  "title": "虚拟化学实验室实验数据",
+  "experiments": [
+    {
+      "id": "neutralization",
+      "name": "酸碱中和",
+      "materials": ["稀盐酸", "氢氧化钠", "酚酞"],
+      "learningGoal": "理解酸碱中和、指示剂变色与放热现象。"
+    },
+    {
+      "id": "precipitation",
+      "name": "沉淀反应",
+      "materials": ["硫酸铜", "氢氧化钠", "硝酸银", "氯化钠"],
+      "learningGoal": "通过沉淀颜色判断离子反应。"
+    },
+    {
+      "id": "gas",
+      "name": "气体生成",
+      "materials": ["稀盐酸", "碳酸钠", "锌粒"],
+      "learningGoal": "观察二氧化碳和氢气的生成条件。"
+    },
+    {
+      "id": "electrolysis",
+      "name": "电解演示",
+      "materials": ["蒸馏水", "直流电源"],
+      "learningGoal": "认识电解水产生氢气与氧气的体积关系。"
+    }
+  ]
+}
